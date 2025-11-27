@@ -21,14 +21,12 @@ def main():
     parser.add_argument("--build", action="store_true", help="Пересоздать базу")
     args = parser.parse_args()
 
-    # Пересоздаём БД при необходимости
     if args.build or not os.path.exists(CHROMA_PATH):
         print("Создаём/пересоздаём векторную базу...")
         create_db_from_html("datasets")
     else:
         print("Используем существующую базу.")
 
-    # Инициализируем компоненты
     retriever = get_retriever(k=10)
     llm = get_llm(model="llama3.1:8b")  # или другая модель
     prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
@@ -44,7 +42,7 @@ def main():
         print("Ищем в базе...")
         docs = retriever.invoke(query)
         print(f"\n[DEBUG] Найдено {len(docs)} релевантных фрагментов. Источники:")
-        for i, doc in enumerate(docs[:3]):  # показываем первые 3
+        for i, doc in enumerate(docs[:3]): 
             source = doc.metadata["source"].split("/")[-1]
             print(f"  {i+1}. {source}")
         print("-" * 50)
